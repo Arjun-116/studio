@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -22,7 +23,13 @@ import {
   Settings,
   LifeBuoy,
   GitBranch,
+  LogOut,
+  Loader2,
+  LogIn,
 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { logout } from "@/app/auth/actions";
+import { Button } from "../ui/button";
 
 const navItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -34,15 +41,38 @@ const navItems = [
   { href: "/messages", label: "Messages", icon: MessageCircle },
 ];
 
-export function SidebarNav() {
+export function SidebarNav({
+  user,
+}: {
+  user: { displayName: string; photoURL: string } | null;
+}) {
   const pathname = usePathname();
+  const { toast } = useToast();
+  const [loggingOut, setLoggingOut] = React.useState(false);
+
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    try {
+      await logout();
+      toast({
+        title: "Logged Out",
+        description: "You have been successfully logged out.",
+      });
+      // You might want to redirect the user to the login page
+      window.location.href = "/login";
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Logout Failed",
+        description: "Something went wrong.",
+      });
+    } finally {
+      setLoggingOut(false);
+    }
+  };
 
   return (
-    <Sidebar
-      className="border-r"
-      collapsible="icon"
-      variant="sidebar"
-    >
+    <Sidebar className="border-r" collapsible="icon" variant="sidebar">
       <SidebarHeader className="p-4">
         <div className="flex items-center gap-2">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
@@ -83,6 +113,29 @@ export function SidebarNav() {
               <LifeBuoy className="h-5 w-5" />
               <span>Support</span>
             </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            {user ? (
+              <SidebarMenuButton
+                onClick={handleLogout}
+                disabled={loggingOut}
+                tooltip="Logout"
+              >
+                {loggingOut ? (
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                ) : (
+                  <LogOut className="h-5 w-5" />
+                )}
+                <span>Logout</span>
+              </SidebarMenuButton>
+            ) : (
+              <Link href="/login">
+                <SidebarMenuButton tooltip="Login">
+                  <LogIn className="h-5 w-5" />
+                  <span>Login</span>
+                </SidebarMenuButton>
+              </Link>
+            )}
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>

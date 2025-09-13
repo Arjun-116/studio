@@ -1,10 +1,11 @@
 'use client';
 
 import {useState} from 'react';
-import {useRouter} from 'next/navigation';
-import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
-import {GitBranch, Loader2} from 'lucide-react';
 import Link from 'next/link';
+import {useRouter} from 'next/navigation';
+import {getAuth, createUserWithEmailAndPassword} from 'firebase/auth';
+import {GitBranch, Loader2} from 'lucide-react';
+
 import {firebaseApp} from '@/lib/firebase/client';
 import {Button} from '@/components/ui/button';
 import {
@@ -18,42 +19,49 @@ import {
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {useToast} from '@/hooks/use-toast';
-import {login} from '../auth/actions';
+import {signup} from '../auth/actions';
 
-export default function LoginPage() {
+export default function SignupPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [displayName, setDisplayName] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const {toast} = useToast();
 
-  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 
+    const formData = new FormData();
+    formData.append('email', email);
+    formData.append('password', password);
+    formData.append('displayName', displayName);
+
+    const result = await signup(formData);
+
+    if (result.error) {
+      toast({
+        variant: 'destructive',
+        title: 'Signup Failed',
+        description: result.error,
+      });
+      setLoading(false);
+      return;
+    }
+
     try {
       const auth = getAuth(firebaseApp);
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const idToken = await userCredential.user.getIdToken();
-
-      const formData = new FormData();
-      formData.append('idToken', idToken);
-
-      await login(formData);
-
+      await createUserWithEmailAndPassword(auth, email, password);
       toast({
-        title: 'Login Successful',
-        description: 'Welcome back!',
+        title: 'Signup Successful',
+        description: 'Please log in with your new account.',
       });
-      router.push('/');
+      router.push('/login');
     } catch (error: any) {
       toast({
         variant: 'destructive',
-        title: 'Login Failed',
+        title: 'Signup Failed',
         description: error.message,
       });
     } finally {
@@ -68,13 +76,24 @@ export default function LoginPage() {
           <div className="mb-4 flex justify-center">
             <GitBranch className="h-12 w-12 text-primary" />
           </div>
-          <CardTitle>Sign In</CardTitle>
+          <CardTitle>Create an Account</CardTitle>
           <CardDescription>
-            Welcome back! Please sign in to your account.
+            Join the network and connect with alumni.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={handleSignup} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="displayName">Full Name</Label>
+              <Input
+                id="displayName"
+                type="text"
+                placeholder="John Doe"
+                required
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+              />
+            </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -87,15 +106,7 @@ export default function LoginPage() {
               />
             </div>
             <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password">Password</Label>
-                <Link
-                  href="#"
-                  className="text-sm font-medium text-primary hover:underline"
-                >
-                  Forgot password?
-                </Link>
-              </div>
+              <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
                 type="password"
@@ -106,18 +117,18 @@ export default function LoginPage() {
             </div>
             <Button type="submit" className="w-full" disabled={loading}>
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Sign In
+              Sign Up
             </Button>
           </form>
         </CardContent>
         <CardFooter className="flex flex-col items-center justify-center text-sm">
           <p className="text-muted-foreground">
-            Don&apos;t have an account?{' '}
+            Already have an account?{' '}
             <Link
-              href="/signup"
+              href="/login"
               className="font-medium text-primary hover:underline"
             >
-              Sign up
+              Sign In
             </Link>
           </p>
         </CardFooter>
