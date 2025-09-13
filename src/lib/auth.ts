@@ -4,7 +4,7 @@ import {auth} from '@/lib/firebase/admin';
 
 export async function getSession() {
   const session = cookies().get('session')?.value;
-  if (!session) return null;
+  if (!session || !auth.verifySessionCookie) return null;
 
   try {
     const decodedClaims = await auth.verifySessionCookie(session, true);
@@ -17,10 +17,11 @@ export async function getSession() {
 
 export async function getCurrentUser(): Promise<User | null> {
   const session = cookies().get('session')?.value;
-  if (!session) return null;
+  if (!session || !auth.verifySessionCookie) return null;
 
   try {
     const decodedClaims = await auth.verifySessionCookie(session, true);
+    if (!auth.getUser) return null;
     const user = await auth.getUser(decodedClaims.uid);
     return user as unknown as User;
   } catch (e) {
@@ -30,6 +31,9 @@ export async function getCurrentUser(): Promise<User | null> {
 }
 
 export async function createSession(idToken: string) {
+  if (!auth.createSessionCookie) {
+    throw new Error('Firebase Admin SDK not initialized.');
+  }
   const expiresIn = 60 * 60 * 24 * 5 * 1000; // 5 days
   const sessionCookie = await auth.createSessionCookie(idToken, {expiresIn});
   cookies().set('session', sessionCookie, {

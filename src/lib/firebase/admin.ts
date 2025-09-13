@@ -1,15 +1,34 @@
-import {initializeApp, getApps, getApp, cert} from 'firebase-admin/app';
-import {getAuth} from 'firebase-admin/auth';
+import {initializeApp, getApps, getApp, cert, App} from 'firebase-admin/app';
+import {getAuth, Auth} from 'firebase-admin/auth';
 
-const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT
-  ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)
-  : {};
+let app: App | undefined;
+let auth: Auth;
 
-const app =
-  getApps().length > 0
-    ? getApp()
-    : initializeApp({
-        credential: cert(serviceAccount),
-      });
+try {
+  const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT
+    ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)
+    : undefined;
 
-export const auth = getAuth(app);
+  if (serviceAccount?.project_id) {
+    app =
+      getApps().length > 0
+        ? getApp()
+        : initializeApp({
+            credential: cert(serviceAccount),
+          });
+
+    auth = getAuth(app);
+  } else {
+    console.warn(
+      'Firebase Admin SDK not initialized. Missing FIREBASE_SERVICE_ACCOUNT environment variable.'
+    );
+    // Provide a mock auth object to avoid breaking the app
+    auth = {} as Auth;
+  }
+} catch (error) {
+  console.error('Error initializing Firebase Admin SDK:', error);
+  // Provide a mock auth object to avoid breaking the app
+  auth = {} as Auth;
+}
+
+export {auth, app};

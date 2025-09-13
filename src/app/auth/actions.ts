@@ -11,6 +11,9 @@ const loginSchema = z.object({
 });
 
 export async function login(data: FormData) {
+  if (!auth.createSessionCookie) {
+    throw new Error('Firebase Admin SDK not initialized.');
+  }
   const parsedData = loginSchema.safeParse({idToken: data.get('idToken')});
   if (!parsedData.success) {
     return {error: 'Invalid ID token'};
@@ -27,6 +30,9 @@ const signupSchema = z.object({
 });
 
 export async function signup(data: FormData) {
+  if (!auth.createUser) {
+    throw new Error('Firebase Admin SDK not initialized.');
+  }
   const parsedData = signupSchema.safeParse({
     email: data.get('email'),
     password: data.get('password'),
