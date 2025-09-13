@@ -1,3 +1,106 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "user1",
+      "description": "Professional headshot of a person",
+      "imageUrl": "https://picsum.photos/seed/user1/100/100",
+      "imageHint": "professional headshot"
+    },
+    {
+      "id": "user2",
+      "description": "Professional headshot of a person",
+      "imageUrl": "https://picsum.photos/seed/user2/100/100",
+      "imageHint": "professional headshot"
+    },
+    {
+      "id": "user3",
+      "description": "Professional headshot of a person",
+      "imageUrl": "https://picsum.photos/seed/user3/100/100",
+      "imageHint": "professional headshot"
+    },
+    {
+      "id": "user4",
+      "description": "Professional headshot of a person",
+      "imageUrl": "https://picsum.photos/seed/user4/100/100",
+      "imageHint": "professional headshot"
+    },
+    {
+      "id": "user5",
+      "description": "Professional headshot of a person",
+      "imageUrl": "https://picsum.photos/seed/user5/100/100",
+      "imageHint": "professional headshot"
+    },
+    {
+      "id": "user6",
+      "description": "Professional headshot of a person",
+      "imageUrl": "https://picsum.photos/seed/user6/100/100",
+      "imageHint": "professional headshot"
+    },
+    {
+      "id": "currentUser",
+      "description": "Professional headshot of current user",
+      "imageUrl": "https://picsum.photos/seed/currentUser/100/100",
+      "imageHint": "woman smiling"
+    },
+    {
+      "id": "event1",
+      "description": "A networking event in progress",
+      "imageUrl": "https://picsum.photos/seed/event1/600/400",
+      "imageHint": "networking event"
+    },
+    {
+      "id": "event2",
+      "description": "A workshop with people collaborating",
+      "imageUrl": "https://picsum.photos/seed/event2/600/400",
+      "imageHint": "business workshop"
+    },
+    {
+      "id": "event3",
+      "description": "A formal gala or reunion dinner",
+      "imageUrl": "https://picsum.photos/seed/event3/600/400",
+      "imageHint": "gala dinner"
+    },
+    {
+      "id": "news1",
+      "description": "A university campus building",
+      "imageUrl": "https://picsum.photos/seed/news1/600/400",
+      "imageHint": "university campus"
+    },
+    {
+      "id": "news2",
+      "description": "Students graduating",
+      "imageUrl": "https://picsum.photos/seed/news2/600/400",
+      "imageHint": "student graduation"
+    },
+    {
+      "id": "news3",
+      "description": "A scientific laboratory",
+      "imageUrl": "https://picsum.photos/seed/news3/600/400",
+      "imageHint": "science laboratory"
+    },
+    {
+      "id": "job1",
+      "description": "A modern office space",
+      "imageUrl": "https://picsum.photos/seed/job1/100/100",
+      "imageHint": "modern office"
+    },
+    {
+      "id": "job2",
+      "description": "A person coding on a laptop",
+      "imageUrl": "https://picsum.photos/seed/job2/100/100",
+      "imageHint": "person coding"
+    },
+    {
+      "id": "job3",
+      "description": "A team meeting around a table",
+      "imageUrl": "https://picsum.photos/seed/job3/100/100",
+      "imageHint": "team meeting"
+    },
+    {
+      "id": "profileBanner",
+      "description": "An abstract geometric pattern",
+      "imageUrl": "https://picsum.photos/seed/profileBanner/1200/300",
+      "imageHint": "abstract pattern"
+    }
+  ]
 }
